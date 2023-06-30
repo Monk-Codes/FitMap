@@ -71,11 +71,13 @@ class Cycling extends Workout {
 class App {
   #map;
   #mapEvent;
+  #mapZoom = 15;
   #workouts = [];
   constructor() {
     this._getPosition();
     form.addEventListener('submit', this._newWorkout.bind(this));
-    inputType.addEventListener('change', this._toggleElevationField);
+    inputType.addEventListener('change', this._toggleElevationField.bind(this));
+    containerWorkouts.addEventListener('click', this._moveToMarker.bind(this));
   }
 
   ///////////////
@@ -94,7 +96,7 @@ class App {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
     const coords = [latitude, longitude];
-    this.#map = L.map('map').setView(coords, 15);
+    this.#map = L.map('map').setView(coords, this.#mapZoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
       attribution:
@@ -110,6 +112,7 @@ class App {
     form.classList.remove('hidden');
     inputDistance.focus();
   }
+  // /////////
   _hideForm() {
     inputDistance.value =
       inputCadence.value =
@@ -164,7 +167,7 @@ class App {
     // render workout onlist
     this._renderWorkout(workout);
     // hide and clear input
-    this.hideForm();
+    this._hideForm();
   }
   //////////////////////////////
   _renderWorkoutMarker(workout) {
@@ -179,7 +182,9 @@ class App {
           className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent('workout')
+      .setPopupContent(
+        `${workout.type === 'running' ? '🏃‍♂️' : '🚴'} ${workout.description}`
+      )
       .openPopup();
   }
 
@@ -230,6 +235,17 @@ class App {
     </li>
       `;
     form.insertAdjacentHTML('afterend', html);
+  }
+  _moveToMarker(e) {
+    const workoutEl = e.target.closest('.workout');
+    if (!workoutEl) return;
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+    this.#map.setView(workout.coords, this.#mapZoom, {
+      animate: true,
+      pan: { duration: 1 },
+    });
   }
 }
 //////////
