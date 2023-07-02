@@ -50,9 +50,10 @@ a:visited {
 }
 
 .logo {
-  height: 10rem;
+  height: 5rem;
+  width: 8rem;
   align-self: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .workouts {
@@ -124,7 +125,7 @@ a:visited {
   gap: 0.5rem 2.5rem;
 
   /* Match height and activity boxes */
-  height: 9.25rem;
+  height: 10rem;
   transition: all 0.5s, transform 1ms;
 }
 
@@ -168,7 +169,7 @@ a:visited {
 }
 
 .form__btn {
-  display: none;
+  color: #aaa;
 }
 
 .copyright {
